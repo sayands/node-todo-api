@@ -114,7 +114,18 @@ app.listen(port, () => {
     console.log(`Started up at port ${port}`);
 });
 
-
+// POST /users/login {email, password}
+app.post('/users/login', (req,res) => {
+    var body = _.pick(req.body,['email','password']);
+    
+    User.findByCredentials(body.email,body.password).then((user) => {
+        return user.generateAuthToken().then((token) => {
+            res.header('x-auth', token).send(user);
+        });
+    }).catch((e) => {
+        res.status(400).send();
+    });
+});
 
 
 module.exports = {app};
