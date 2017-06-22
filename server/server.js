@@ -110,10 +110,6 @@ app.get('/users/me', authenticate, (req,res) => {
     res.send(req.user);
   });
     
-app.listen(port, () => {
-    console.log(`Started up at port ${port}`);
-});
-
 app.post('/users/login', (req,res) => {
     var body = _.pick(req.body,['email','password']);
     
@@ -126,5 +122,18 @@ app.post('/users/login', (req,res) => {
     });
 });
 
+app.delete('/users/me/token', authenticate, (req,res) => {
+    req.user.removeToken(req.token).then(() => {
+        res.status(200).send();
+    }, () => {
+        res.status(400).send();
+    })
+});
+
+
+
+app.listen(port, () => {
+    console.log(`Started up at port ${port}`);
+});
 
 module.exports = {app};
